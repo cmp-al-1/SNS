@@ -1,0 +1,13 @@
+const assert = require('assert');
+const store = require('./store');
+const engine = require('./engine');
+const connectors = require('./connectors');
+const path = require('path');
+store.reset();
+store.addAlert({ id: '1', title: 'a' });
+store.addAlert({ id: '1', title: 'a' });
+assert.equal(store.listAlerts().length, 1);
+engine.run(path.join(__dirname, '../samples/close.yml'), store.getAlert('1'));
+assert.equal(store.getAlert('1').status, 'closed');
+assert(connectors.sekoia.listAlerts().length && connectors.sentinelone.listAlerts().length);
+console.log('backend tests ok');
